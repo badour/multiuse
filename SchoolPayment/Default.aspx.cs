@@ -225,9 +225,15 @@ namespace SchoolPayment
 
         private bool TryGetSelectedIds(out int schoolId, out int stageId, out int studentId)
         {
-            return int.TryParse(ddlSchool.SelectedValue, out schoolId)
-                && int.TryParse(ddlStage.SelectedValue, out stageId)
-                && int.TryParse(ddlStudent.SelectedValue, out studentId)
+            schoolId = 0;
+            stageId = 0;
+            studentId = 0;
+
+            var hasSchool = int.TryParse(ddlSchool.SelectedValue, out schoolId);
+            var hasStage = int.TryParse(ddlStage.SelectedValue, out stageId);
+            var hasStudent = int.TryParse(ddlStudent.SelectedValue, out studentId);
+
+            return hasSchool && hasStage && hasStudent
                 && schoolId > 0 && stageId > 0 && studentId > 0;
         }
 
