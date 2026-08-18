@@ -44,6 +44,16 @@ namespace SchoolPayment.Services
             string country,
             IDictionary<string, object> customData)
         {
+            var pairingError = GetCredentialPairingError();
+            if (pairingError != null)
+            {
+                return new AlqasehCreateResult
+                {
+                    IsSuccess = false,
+                    ErrorMessage = pairingError
+                };
+            }
+
             var payload = new Dictionary<string, object>
             {
                 { "amount", amount },
@@ -235,6 +245,22 @@ namespace SchoolPayment.Services
         private static string GetApiBaseUrl()
         {
             return (ConfigurationManager.AppSettings["Alqaseh.ApiBaseUrl"] ?? "https://api-test.alqaseh.com/v1").TrimEnd('/');
+        }
+
+        private static string GetCredentialPairingError()
+        {
+            var apiBaseUrl = GetApiBaseUrl();
+            var clientId = ConfigurationManager.AppSettings["Alqaseh.ClientId"] ?? string.Empty;
+            var isProductionApi = apiBaseUrl.IndexOf("api.alqaseh.com", StringComparison.OrdinalIgnoreCase) >= 0
+                && apiBaseUrl.IndexOf("api-test.alqaseh.com", StringComparison.OrdinalIgnoreCase) < 0;
+            var isSandboxUser = string.Equals(clientId.Trim(), "public_test", StringComparison.OrdinalIgnoreCase);
+
+            if (isProductionApi && isSandboxUser)
+            {
+                return "بيانات الاختبار public_test لا تعمل على https://api.alqaseh.com. للاختبار أرجع ApiBaseUrl إلى https://api-test.alqaseh.com/v1 وPaymentPageBaseUrl إلى https://pay-test.alqaseh.com. للإنتاج استخدم ClientId وClientSecret الحقيقيين من شركة القصّة.";
+            }
+
+            return null;
         }
 
         private static string Combine(string baseUrl, string path)
