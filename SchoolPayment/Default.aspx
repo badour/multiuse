@@ -5,7 +5,7 @@
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
     <section class="panel">
         <h1>دفع الرسوم عبر فيزا أو ماستركارد</h1>
-        <p class="lead">اختر المدرسة والمرحلة واسم الطالب ونوع الدفع، ثم أكمل العملية في صفحة القصّة الآمنة.</p>
+        <p class="lead">اختر المدرسة والمرحلة واسم الطالب ونوع الدفع، ثم أدخل مبلغ الدفع.</p>
 
         <asp:Literal ID="litMessage" runat="server" />
 
@@ -25,11 +25,11 @@
                     </div>
                     <div class="field full">
                         <asp:Label runat="server" AssociatedControlID="ddlStudent" Text="اسم الطالب" />
-                        <asp:DropDownList ID="ddlStudent" runat="server" AutoPostBack="true" CausesValidation="false" OnSelectedIndexChanged="ddlStudent_SelectedIndexChanged" />
+                        <asp:DropDownList ID="ddlStudent" runat="server" />
                     </div>
                     <div class="field full">
                         <span class="label">نوع الدفع</span>
-                        <asp:RadioButtonList ID="rblPaymentType" runat="server" RepeatLayout="Flow" CssClass="pay-types" AutoPostBack="true" CausesValidation="false" OnSelectedIndexChanged="rblPaymentType_SelectedIndexChanged">
+                        <asp:RadioButtonList ID="rblPaymentType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" CssClass="pay-types" CausesValidation="false">
                             <asp:ListItem Text="اقساط عام حالي" Value="اقساط عام حالي" Selected="True" />
                             <asp:ListItem Text="ديون" Value="ديون" />
                         </asp:RadioButtonList>
@@ -43,15 +43,10 @@
                         <asp:TextBox ID="txtPhone" runat="server" MaxLength="30" />
                     </div>
                     <div class="field full">
-                        <asp:Label runat="server" AssociatedControlID="txtEmail" Text="البريد الإلكتروني (اختياري)" />
-                        <asp:TextBox ID="txtEmail" runat="server" TextMode="Email" MaxLength="80" />
-                    </div>
-                    <div class="field full">
-                        <div class="amount-box">
-                            <span>المبلغ المستحق</span>
-                            <strong>
-                                <asp:Literal ID="litAmount" runat="server" Text="—" />
-                            </strong>
+                        <asp:Label runat="server" AssociatedControlID="txtAmount" Text="قيمة الدفع" />
+                        <div class="amount-input-wrap">
+                            <asp:TextBox ID="txtAmount" runat="server" CssClass="amount-input" MaxLength="18" />
+                            <span class="amount-suffix">د.ع</span>
                         </div>
                     </div>
                 </div>

@@ -28,7 +28,6 @@ namespace SchoolPayment
                 BindSchools();
                 BindStages();
                 BindStudents();
-                RefreshAmount();
             }
             catch (SqlException)
             {
@@ -41,23 +40,11 @@ namespace SchoolPayment
         {
             BindStages();
             BindStudents();
-            RefreshAmount();
         }
 
         protected void ddlStage_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindStudents();
-            RefreshAmount();
-        }
-
-        protected void ddlStudent_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            RefreshAmount();
-        }
-
-        protected void rblPaymentType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            RefreshAmount();
         }
 
         protected void btnPay_Click(object sender, EventArgs e)
@@ -80,20 +67,17 @@ namespace SchoolPayment
                 return;
             }
 
+            decimal amount;
+            if (!TryParseAmount(txtAmount.Text, out amount))
+            {
+                ShowError("يرجى إدخال قيمة دفع صحيحة أكبر من صفر.");
+                return;
+            }
+
             var student = _schools.GetStudent(studentId);
             if (student == null || student.SchoolId != schoolId || student.StageId != stageId)
             {
                 ShowError("بيانات الطالب غير متطابقة مع المدرسة والمرحلة المحددتين.");
-                return;
-            }
-
-            var amount = _schools.ResolveAmount(schoolId, stageId, studentId, paymentType);
-            if (!amount.HasValue || amount.Value <= 0)
-            {
-                ShowError(paymentType == PaymentTypes.Debt
-                    ? "لا توجد ديون مستحقة على هذا الطالب."
-                    : "لم يتم العثور على مبلغ القسط لهذه المرحلة.");
-                RefreshAmount();
                 return;
             }
 
@@ -105,10 +89,9 @@ namespace SchoolPayment
                 StageId = stageId,
                 StudentId = studentId,
                 PaymentType = paymentType,
-                Amount = amount.Value,
+                Amount = amount,
                 Currency = "IQD",
                 PayerName = NullIfEmpty(txtPayerName.Text),
-                PayerEmail = NullIfEmpty(txtEmail.Text),
                 PayerPhone = NullIfEmpty(txtPhone.Text),
                 Status = "Prepared"
             };
@@ -123,13 +106,13 @@ namespace SchoolPayment
                 student.StudentNumber);
 
             var result = _alqaseh.CreatePayment(
-                amount.Value,
+                amount,
                 "IQD",
                 orderId,
                 description,
                 AppUrls.GetRedirectUrl(Request),
                 AppUrls.GetWebhookUrl(Request),
-                payment.PayerEmail,
+                null,
                 "IQ",
                 new Dictionary<string, object>
                 {
@@ -199,30 +182,6 @@ namespace SchoolPayment
             }
         }
 
-        private void RefreshAmount()
-        {
-            int schoolId;
-            int stageId;
-            int studentId;
-            if (!TryGetSelectedIds(out schoolId, out stageId, out studentId))
-            {
-                litAmount.Text = "—";
-                btnPay.Enabled = false;
-                return;
-            }
-
-            var amount = _schools.ResolveAmount(schoolId, stageId, studentId, rblPaymentType.SelectedValue);
-            if (!amount.HasValue || amount.Value <= 0)
-            {
-                litAmount.Text = "لا يوجد مبلغ مستحق";
-                btnPay.Enabled = false;
-                return;
-            }
-
-            litAmount.Text = string.Format(new CultureInfo("ar-IQ"), "{0:N0} د.ع", amount.Value);
-            btnPay.Enabled = true;
-        }
-
         private bool TryGetSelectedIds(out int schoolId, out int stageId, out int studentId)
         {
             schoolId = 0;
@@ -235,6 +194,19 @@ namespace SchoolPayment
 
             return hasSchool && hasStage && hasStudent
                 && schoolId > 0 && stageId > 0 && studentId > 0;
+        }
+
+        private static bool TryParseAmount(string text, out decimal amount)
+        {
+            amount = 0;
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return false;
+            }
+
+            var raw = text.Trim().Replace(",", "").Replace("،", "").Replace(" ", "");
+            return decimal.TryParse(raw, NumberStyles.Number, CultureInfo.InvariantCulture, out amount)
+                && amount > 0;
         }
 
         private void ShowError(string message)

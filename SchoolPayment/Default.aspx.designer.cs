@@ -10,8 +10,7 @@ namespace SchoolPayment
         protected global::System.Web.UI.WebControls.RadioButtonList rblPaymentType;
         protected global::System.Web.UI.WebControls.TextBox txtPayerName;
         protected global::System.Web.UI.WebControls.TextBox txtPhone;
-        protected global::System.Web.UI.WebControls.TextBox txtEmail;
-        protected global::System.Web.UI.WebControls.Literal litAmount;
+        protected global::System.Web.UI.WebControls.TextBox txtAmount;
         protected global::System.Web.UI.WebControls.Button btnPay;
     }
 }

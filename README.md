@@ -11,9 +11,8 @@ On load, the parent selects:
 1. **School name** — from SQL `Schools`
 2. **Stage** — from SQL `Stages` filtered by the selected school
 3. **Student name** — from SQL `Students` filtered by school and stage
-4. **Payment type**
-   - `اقساط عام حالي` — amount from `PaymentFees`
-   - `ديون` — amount from `Students.OutstandingDebt`
+4. **Payment type** — `اقساط عام حالي` or `ديون`
+5. **Payment amount** — typed by the parent in IQD
 
 Pay now creates a row in `Payments`, calls `POST /egw/payments/create`, then redirects to the Visa/Mastercard page.
 

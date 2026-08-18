@@ -17,7 +17,7 @@
         <header class="topbar">
             <div class="wrap">
                 <div class="brand">
-                    <span class="brand-mark" aria-hidden="true">م</span>
+                    <asp:Image ID="imgLogo" runat="server" ImageUrl="~/Content/logo.png" CssClass="brand-logo" AlternateText="شعار المدرسة" />
                     <div>
                         <strong>بوابة الدفع المدرسي</strong>
                         <small>دفع آمن عبر فيزا وماستركارد</small>

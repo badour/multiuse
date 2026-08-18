@@ -95,6 +95,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\logo.png" />
     <Content Include="Content\site.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
