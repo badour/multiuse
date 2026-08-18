@@ -37,65 +37,43 @@ ORDER BY Name";
             return schools;
         }
 
-        public IList<Stage> GetStagesBySchool(int schoolId)
-        {
-            var stages = new List<Stage>();
-            const string sql = @"
-SELECT Id, SchoolId, Name
-FROM dbo.Stages
-WHERE SchoolId = @SchoolId
-ORDER BY SortOrder, Name";
-
-            using (var connection = SqlHelper.CreateConnection())
-            using (var command = new SqlCommand(sql, connection))
-            {
-                command.Parameters.Add(SqlHelper.Param("@SchoolId", schoolId, SqlDbType.Int));
-                connection.Open();
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        stages.Add(new Stage
-                        {
-                            Id = reader.GetInt32(0),
-                            SchoolId = reader.GetInt32(1),
-                            Name = reader.GetString(2)
-                        });
-                    }
-                }
-            }
-
-            return stages;
-        }
-
-        public IList<Student> GetStudents(int schoolId, int stageId)
+        public IList<Student> SearchStudents(int schoolId, string studentLookup)
         {
             var students = new List<Student>();
+            if (schoolId <= 0 || string.IsNullOrWhiteSpace(studentLookup))
+            {
+                return students;
+            }
+
+            int parsedId;
+            var hasNumericId = int.TryParse(studentLookup.Trim(), out parsedId);
+
             const string sql = @"
-SELECT Id, SchoolId, StageId, FullName, StudentNumber, OutstandingDebt
-FROM dbo.Students
-WHERE SchoolId = @SchoolId AND StageId = @StageId
-ORDER BY FullName";
+SELECT s.Id, s.SchoolId, s.StageId, s.FullName, s.StudentNumber,
+       s.TotalCost, s.PaidCost, s.RemainCost, s.DebtCost, s.DiscountCost,
+       st.Name
+FROM dbo.Students s
+INNER JOIN dbo.Stages st ON st.Id = s.StageId
+WHERE s.SchoolId = @SchoolId
+  AND (
+        s.StudentNumber = @Lookup
+        OR (@HasNumericId = 1 AND s.Id = @StudentId)
+      )
+ORDER BY s.FullName";
 
             using (var connection = SqlHelper.CreateConnection())
             using (var command = new SqlCommand(sql, connection))
             {
                 command.Parameters.Add(SqlHelper.Param("@SchoolId", schoolId, SqlDbType.Int));
-                command.Parameters.Add(SqlHelper.Param("@StageId", stageId, SqlDbType.Int));
+                command.Parameters.Add(SqlHelper.Param("@Lookup", studentLookup.Trim(), SqlDbType.NVarChar, 50));
+                command.Parameters.Add(SqlHelper.Param("@HasNumericId", hasNumericId, SqlDbType.Bit));
+                command.Parameters.Add(SqlHelper.Param("@StudentId", hasNumericId ? (object)parsedId : 0, SqlDbType.Int));
                 connection.Open();
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        students.Add(new Student
-                        {
-                            Id = reader.GetInt32(0),
-                            SchoolId = reader.GetInt32(1),
-                            StageId = reader.GetInt32(2),
-                            FullName = reader.GetString(3),
-                            StudentNumber = reader.IsDBNull(4) ? null : reader.GetString(4),
-                            OutstandingDebt = reader.GetDecimal(5)
-                        });
+                        students.Add(MapStudent(reader, true));
                     }
                 }
             }
@@ -106,9 +84,12 @@ ORDER BY FullName";
         public Student GetStudent(int studentId)
         {
             const string sql = @"
-SELECT Id, SchoolId, StageId, FullName, StudentNumber, OutstandingDebt
-FROM dbo.Students
-WHERE Id = @Id";
+SELECT s.Id, s.SchoolId, s.StageId, s.FullName, s.StudentNumber,
+       s.TotalCost, s.PaidCost, s.RemainCost, s.DebtCost, s.DiscountCost,
+       st.Name
+FROM dbo.Students s
+INNER JOIN dbo.Stages st ON st.Id = s.StageId
+WHERE s.Id = @Id";
 
             using (var connection = SqlHelper.CreateConnection())
             using (var command = new SqlCommand(sql, connection))
@@ -122,52 +103,27 @@ WHERE Id = @Id";
                         return null;
                     }
 
-                    return new Student
-                    {
-                        Id = reader.GetInt32(0),
-                        SchoolId = reader.GetInt32(1),
-                        StageId = reader.GetInt32(2),
-                        FullName = reader.GetString(3),
-                        StudentNumber = reader.IsDBNull(4) ? null : reader.GetString(4),
-                        OutstandingDebt = reader.GetDecimal(5)
-                    };
+                    return MapStudent(reader, true);
                 }
             }
         }
 
-        public decimal? GetFeeAmount(int schoolId, int stageId, string paymentType)
+        private static Student MapStudent(SqlDataReader reader, bool includeStageName)
         {
-            const string sql = @"
-SELECT Amount
-FROM dbo.PaymentFees
-WHERE SchoolId = @SchoolId AND StageId = @StageId AND PaymentType = @PaymentType";
-
-            using (var connection = SqlHelper.CreateConnection())
-            using (var command = new SqlCommand(sql, connection))
+            return new Student
             {
-                command.Parameters.Add(SqlHelper.Param("@SchoolId", schoolId, SqlDbType.Int));
-                command.Parameters.Add(SqlHelper.Param("@StageId", stageId, SqlDbType.Int));
-                command.Parameters.Add(SqlHelper.Param("@PaymentType", paymentType, SqlDbType.NVarChar));
-                connection.Open();
-                var result = command.ExecuteScalar();
-                if (result == null || result == DBNull.Value)
-                {
-                    return null;
-                }
-
-                return Convert.ToDecimal(result);
-            }
-        }
-
-        public decimal? ResolveAmount(int schoolId, int stageId, int studentId, string paymentType)
-        {
-            if (string.Equals(paymentType, PaymentTypes.Debt, StringComparison.Ordinal))
-            {
-                var student = GetStudent(studentId);
-                return student == null ? (decimal?)null : student.OutstandingDebt;
-            }
-
-            return GetFeeAmount(schoolId, stageId, paymentType);
+                Id = reader.GetInt32(0),
+                SchoolId = reader.GetInt32(1),
+                StageId = reader.GetInt32(2),
+                FullName = reader.GetString(3),
+                StudentNumber = reader.IsDBNull(4) ? null : reader.GetString(4),
+                TotalCost = reader.GetDecimal(5),
+                PaidCost = reader.GetDecimal(6),
+                RemainCost = reader.GetDecimal(7),
+                DebtCost = reader.GetDecimal(8),
+                DiscountCost = reader.GetDecimal(9),
+                StageName = includeStageName && !reader.IsDBNull(10) ? reader.GetString(10) : null
+            };
         }
     }
 }

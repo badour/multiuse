@@ -7,6 +7,11 @@ namespace SchoolPayment.Models
         public int StageId { get; set; }
         public string FullName { get; set; }
         public string StudentNumber { get; set; }
-        public decimal OutstandingDebt { get; set; }
+        public string StageName { get; set; }
+        public decimal TotalCost { get; set; }
+        public decimal PaidCost { get; set; }
+        public decimal RemainCost { get; set; }
+        public decimal DebtCost { get; set; }
+        public decimal DiscountCost { get; set; }
     }
 }

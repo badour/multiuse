@@ -22,7 +22,7 @@ html, body {
 }
 
 .wrap {
-    width: min(960px, calc(100% - 32px));
+    width: min(1080px, calc(100% - 32px));
     margin: 0 auto;
 }
 
@@ -129,6 +129,53 @@ select, input[type="text"], input[type="email"], input[type="tel"], .asp-input {
 select:focus, input:focus {
     outline: 2px solid #9db7ee;
     border-color: var(--navy);
+}
+
+.search-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-input input {
+    flex: 1;
+}
+
+.btn-search {
+    background: var(--navy);
+    color: #fff;
+    white-space: nowrap;
+}
+
+.grid-wrap {
+    overflow-x: auto;
+    margin: 8px 0 20px;
+}
+
+.student-grid {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.student-grid th {
+    background: var(--navy);
+    color: #fff;
+    text-align: right;
+    padding: 10px 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.student-grid td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    background: #fffcf7;
+    white-space: nowrap;
+}
+
+.student-grid tr:last-child td {
+    border-bottom: 0;
 }
 
 .pay-types {
@@ -251,6 +298,10 @@ select:focus, input:focus {
     display: flex;
     justify-content: space-between;
     gap: 12px;
+}
+
+.is-hidden {
+    display: none;
 }
 
 .footer {

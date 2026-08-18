@@ -38,7 +38,11 @@ CREATE TABLE dbo.Students
     StageId INT NOT NULL,
     FullName NVARCHAR(200) NOT NULL,
     StudentNumber NVARCHAR(50) NULL,
-    OutstandingDebt DECIMAL(18, 2) NOT NULL CONSTRAINT DF_Students_OutstandingDebt DEFAULT (0),
+    TotalCost DECIMAL(18, 2) NOT NULL CONSTRAINT DF_Students_TotalCost DEFAULT (0),
+    PaidCost DECIMAL(18, 2) NOT NULL CONSTRAINT DF_Students_PaidCost DEFAULT (0),
+    RemainCost DECIMAL(18, 2) NOT NULL CONSTRAINT DF_Students_RemainCost DEFAULT (0),
+    DebtCost DECIMAL(18, 2) NOT NULL CONSTRAINT DF_Students_DebtCost DEFAULT (0),
+    DiscountCost DECIMAL(18, 2) NOT NULL CONSTRAINT DF_Students_DiscountCost DEFAULT (0),
     CONSTRAINT FK_Students_Schools FOREIGN KEY (SchoolId) REFERENCES dbo.Schools (Id),
     CONSTRAINT FK_Students_Stages FOREIGN KEY (StageId) REFERENCES dbo.Stages (Id)
 );
@@ -84,6 +88,7 @@ CREATE TABLE dbo.Payments
 
 CREATE INDEX IX_Stages_SchoolId ON dbo.Stages (SchoolId);
 CREATE INDEX IX_Students_School_Stage ON dbo.Students (SchoolId, StageId);
+CREATE INDEX IX_Students_School_Number ON dbo.Students (SchoolId, StudentNumber);
 CREATE INDEX IX_Payments_StudentId ON dbo.Payments (StudentId);
 GO
 
@@ -115,17 +120,17 @@ DECLARE @Noor6 INT = (SELECT Id FROM dbo.Stages WHERE SchoolId = @Noor AND Name 
 DECLARE @RafMid INT = (SELECT Id FROM dbo.Stages WHERE SchoolId = @Rafidain AND Name = N'المرحلة المتوسطة');
 DECLARE @RafPrep INT = (SELECT Id FROM dbo.Stages WHERE SchoolId = @Rafidain AND Name = N'المرحلة الإعدادية');
 
-INSERT INTO dbo.Students (SchoolId, StageId, FullName, StudentNumber, OutstandingDebt) VALUES
-(@Amal, @Amal1, N'أحمد علي كاظم', N'A-1001', 25000),
-(@Amal, @Amal1, N'فاطمة محمد حسن', N'A-1002', 0),
-(@Amal, @Amal2, N'يوسف سالم جاسم', N'A-2001', 40000),
-(@Amal, @Amal3, N'زينب عبد الحسين', N'A-3001', 15000),
-(@Noor, @Noor4, N'حسين كريم عباس', N'N-4001', 80000),
-(@Noor, @Noor4, N'مصطفى نزار مهدي', N'N-4002', 0),
-(@Noor, @Noor5, N'علي جبار محمد', N'N-5001', 120000),
-(@Noor, @Noor6, N'حسن وليد سعيد', N'N-6001', 50000),
-(@Rafidain, @RafMid, N'مريم سامي رشيد', N'R-1101', 30000),
-(@Rafidain, @RafPrep, N'نور الهدى قاسم', N'R-2101', 60000);
+INSERT INTO dbo.Students (SchoolId, StageId, FullName, StudentNumber, TotalCost, PaidCost, RemainCost, DebtCost, DiscountCost) VALUES
+(@Amal, @Amal1, N'أحمد علي كاظم', N'A-1001', 150000, 50000, 90000, 25000, 10000),
+(@Amal, @Amal1, N'فاطمة محمد حسن', N'A-1002', 150000, 150000, 0, 0, 0),
+(@Amal, @Amal2, N'يوسف سالم جاسم', N'A-2001', 160000, 40000, 110000, 40000, 10000),
+(@Amal, @Amal3, N'زينب عبد الحسين', N'A-3001', 170000, 70000, 90000, 15000, 10000),
+(@Noor, @Noor4, N'حسين كريم عباس', N'N-4001', 350000, 100000, 230000, 80000, 20000),
+(@Noor, @Noor4, N'مصطفى نزار مهدي', N'N-4002', 350000, 350000, 0, 0, 0),
+(@Noor, @Noor5, N'علي جبار محمد', N'N-5001', 375000, 125000, 230000, 120000, 20000),
+(@Noor, @Noor6, N'حسن وليد سعيد', N'N-6001', 400000, 150000, 230000, 50000, 20000),
+(@Rafidain, @RafMid, N'مريم سامي رشيد', N'R-1101', 500000, 200000, 270000, 30000, 30000),
+(@Rafidain, @RafPrep, N'نور الهدى قاسم', N'R-2101', 650000, 250000, 360000, 60000, 40000);
 
 INSERT INTO dbo.PaymentFees (SchoolId, StageId, PaymentType, Amount) VALUES
 (@Amal, @Amal1, N'اقساط عام حالي', 150000),

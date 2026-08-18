@@ -26,8 +26,7 @@ namespace SchoolPayment
             try
             {
                 BindSchools();
-                BindStages();
-                BindStudents();
+                BindStudentGrid(null);
             }
             catch (SqlException)
             {
@@ -38,13 +37,47 @@ namespace SchoolPayment
 
         protected void ddlSchool_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BindStages();
-            BindStudents();
+            ClearStudentResult();
         }
 
-        protected void ddlStage_SelectedIndexChanged(object sender, EventArgs e)
+        protected void btnSearch_Click(object sender, EventArgs e)
         {
-            BindStudents();
+            litMessage.Text = string.Empty;
+            ClearStudentResult();
+
+            int schoolId;
+            if (!int.TryParse(ddlSchool.SelectedValue, out schoolId) || schoolId <= 0)
+            {
+                ShowError("يرجى اختيار اسم المدرسة.");
+                return;
+            }
+
+            var lookup = (txtStudentId.Text ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(lookup))
+            {
+                ShowError("يرجى إدخال رقم الطالب ثم الضغط على بحث.");
+                return;
+            }
+
+            try
+            {
+                var students = _schools.SearchStudents(schoolId, lookup);
+                BindStudentGrid(students);
+
+                if (students.Count == 0)
+                {
+                    ShowError("لم يتم العثور على طالب بهذا الرقم في المدرسة المحددة.");
+                    return;
+                }
+
+                hfStudentId.Value = students[0].Id.ToString(CultureInfo.InvariantCulture);
+                ShowPaymentPanel(true);
+                ShowOk("تم العثور على الطالب: " + students[0].FullName);
+            }
+            catch (SqlException)
+            {
+                ShowError("تعذر البحث في قاعدة البيانات.");
+            }
         }
 
         protected void btnPay_Click(object sender, EventArgs e)
@@ -52,11 +85,16 @@ namespace SchoolPayment
             litMessage.Text = string.Empty;
 
             int schoolId;
-            int stageId;
-            int studentId;
-            if (!TryGetSelectedIds(out schoolId, out stageId, out studentId))
+            if (!int.TryParse(ddlSchool.SelectedValue, out schoolId) || schoolId <= 0)
             {
-                ShowError("يرجى اختيار المدرسة والمرحلة واسم الطالب.");
+                ShowError("يرجى اختيار اسم المدرسة.");
+                return;
+            }
+
+            int studentId;
+            if (!int.TryParse(hfStudentId.Value, out studentId) || studentId <= 0)
+            {
+                ShowError("يرجى البحث عن الطالب أولاً حتى يظهر اسمه في الجدول.");
                 return;
             }
 
@@ -75,9 +113,9 @@ namespace SchoolPayment
             }
 
             var student = _schools.GetStudent(studentId);
-            if (student == null || student.SchoolId != schoolId || student.StageId != stageId)
+            if (student == null || student.SchoolId != schoolId)
             {
-                ShowError("بيانات الطالب غير متطابقة مع المدرسة والمرحلة المحددتين.");
+                ShowError("بيانات الطالب غير متطابقة مع المدرسة المحددة. أعد البحث.");
                 return;
             }
 
@@ -86,8 +124,8 @@ namespace SchoolPayment
             {
                 OrderId = orderId,
                 SchoolId = schoolId,
-                StageId = stageId,
-                StudentId = studentId,
+                StageId = student.StageId,
+                StudentId = student.Id,
                 PaymentType = paymentType,
                 Amount = amount,
                 Currency = "IQD",
@@ -117,8 +155,8 @@ namespace SchoolPayment
                 new Dictionary<string, object>
                 {
                     { "schoolId", schoolId },
-                    { "stageId", stageId },
-                    { "studentId", studentId },
+                    { "stageId", student.StageId },
+                    { "studentId", student.Id },
                     { "paymentType", paymentType }
                 });
 
@@ -144,56 +182,22 @@ namespace SchoolPayment
             }
         }
 
-        private void BindStages()
+        private void BindStudentGrid(IList<Student> students)
         {
-            ddlStage.Items.Clear();
-            ddlStage.Items.Add(new ListItem("اختر المرحلة", ""));
-
-            int schoolId;
-            if (!int.TryParse(ddlSchool.SelectedValue, out schoolId) || schoolId <= 0)
-            {
-                return;
-            }
-
-            foreach (var stage in _schools.GetStagesBySchool(schoolId))
-            {
-                ddlStage.Items.Add(new ListItem(stage.Name, stage.Id.ToString(CultureInfo.InvariantCulture)));
-            }
+            gvStudent.DataSource = students ?? new List<Student>();
+            gvStudent.DataBind();
         }
 
-        private void BindStudents()
+        private void ClearStudentResult()
         {
-            ddlStudent.Items.Clear();
-            ddlStudent.Items.Add(new ListItem("اختر الطالب", ""));
-
-            int schoolId;
-            int stageId;
-            if (!int.TryParse(ddlSchool.SelectedValue, out schoolId) || !int.TryParse(ddlStage.SelectedValue, out stageId))
-            {
-                return;
-            }
-
-            foreach (var student in _schools.GetStudents(schoolId, stageId))
-            {
-                var text = string.IsNullOrWhiteSpace(student.StudentNumber)
-                    ? student.FullName
-                    : student.FullName + " — " + student.StudentNumber;
-                ddlStudent.Items.Add(new ListItem(text, student.Id.ToString(CultureInfo.InvariantCulture)));
-            }
+            hfStudentId.Value = string.Empty;
+            ShowPaymentPanel(false);
+            BindStudentGrid(null);
         }
 
-        private bool TryGetSelectedIds(out int schoolId, out int stageId, out int studentId)
+        private void ShowPaymentPanel(bool visible)
         {
-            schoolId = 0;
-            stageId = 0;
-            studentId = 0;
-
-            var hasSchool = int.TryParse(ddlSchool.SelectedValue, out schoolId);
-            var hasStage = int.TryParse(ddlStage.SelectedValue, out stageId);
-            var hasStudent = int.TryParse(ddlStudent.SelectedValue, out studentId);
-
-            return hasSchool && hasStage && hasStudent
-                && schoolId > 0 && stageId > 0 && studentId > 0;
+            pnlPayment.CssClass = visible ? string.Empty : "is-hidden";
         }
 
         private static bool TryParseAmount(string text, out decimal amount)
@@ -212,6 +216,11 @@ namespace SchoolPayment
         private void ShowError(string message)
         {
             litMessage.Text = "<div class=\"message error\">" + Server.HtmlEncode(message) + "</div>";
+        }
+
+        private void ShowOk(string message)
+        {
+            litMessage.Text = "<div class=\"message ok\">" + Server.HtmlEncode(message) + "</div>";
         }
 
         private static string NullIfEmpty(string value)
