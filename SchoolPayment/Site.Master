@@ -1,0 +1,40 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="SchoolPayment.SiteMaster" %>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server">الدفع الإلكتروني المدرسي</asp:ContentPlaceHolder></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link href="Content/site.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true" />
+        <header class="topbar">
+            <div class="wrap">
+                <div class="brand">
+                    <span class="brand-mark" aria-hidden="true">م</span>
+                    <div>
+                        <strong>بوابة الدفع المدرسي</strong>
+                        <small>دفع آمن عبر فيزا وماستركارد</small>
+                    </div>
+                </div>
+                <div class="card-badges" aria-label="بطاقات مدعومة">
+                    <span class="badge visa">VISA</span>
+                    <span class="badge mastercard">Mastercard</span>
+                </div>
+            </div>
+        </header>
+        <main class="wrap page">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </main>
+        <footer class="footer">
+            <div class="wrap">تتم معالجة بيانات البطاقة عبر صفحة الدفع الآمنة لشركة القصّة وفق متطلبات PCI-DSS.</div>
+        </footer>
+    </form>
+</body>
+</html>

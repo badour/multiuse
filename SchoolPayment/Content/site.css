@@ -1,0 +1,271 @@
+:root {
+    --navy: #0b3d91;
+    --navy-dark: #072c6b;
+    --gold: #c9a227;
+    --paper: #f6f3ec;
+    --card: #ffffff;
+    --ink: #1b2430;
+    --muted: #5b6775;
+    --line: #e4ddd0;
+    --danger: #b42318;
+    --ok: #027a48;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(circle at top right, #dbe7ff 0, var(--paper) 42%);
+    color: var(--ink);
+    font-family: "Tajawal", "Segoe UI", Tahoma, sans-serif;
+}
+
+.wrap {
+    width: min(960px, calc(100% - 32px));
+    margin: 0 auto;
+}
+
+.topbar {
+    background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+    color: #fff;
+    padding: 18px 0;
+    box-shadow: 0 8px 24px rgba(7, 44, 107, 0.18);
+}
+
+.topbar .wrap,
+.brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.brand {
+    justify-content: flex-start;
+}
+
+.brand-mark {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: var(--gold);
+    color: var(--navy-dark);
+    font-weight: 800;
+    font-size: 22px;
+}
+
+.brand small {
+    display: block;
+    opacity: 0.82;
+    font-size: 13px;
+}
+
+.card-badges {
+    display: flex;
+    gap: 8px;
+}
+
+.badge {
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.badge.visa { color: #9ecbff; }
+.badge.mastercard { color: #ffd27a; }
+
+.page {
+    padding: 28px 0 64px;
+}
+
+.panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 28px;
+    box-shadow: 0 16px 40px rgba(27, 36, 48, 0.08);
+}
+
+.panel h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.lead {
+    margin: 0 0 24px;
+    color: var(--muted);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field.full { grid-column: 1 / -1; }
+
+label, .label {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+select, input[type="text"], input[type="email"], input[type="tel"], .asp-input {
+    width: 100%;
+    border: 1px solid #d7d0c3;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font: inherit;
+    background: #fffcf7;
+}
+
+select:focus, input:focus {
+    outline: 2px solid #9db7ee;
+    border-color: var(--navy);
+}
+
+.pay-types {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.pay-types input {
+    margin-left: 8px;
+}
+
+.pay-types label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: #fbf8f1;
+    cursor: pointer;
+}
+
+.amount-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0b3d91;
+    color: #fff;
+    border-radius: 16px;
+    padding: 16px 18px;
+}
+
+.amount-box strong {
+    font-size: 26px;
+    color: #ffd27a;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.btn {
+    border: 0;
+    border-radius: 14px;
+    padding: 13px 22px;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.btn-pay {
+    background: var(--gold);
+    color: var(--navy-dark);
+}
+
+.btn-pay:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.note {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.message {
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+}
+
+.message.error {
+    background: #fee4e2;
+    color: var(--danger);
+}
+
+.message.ok {
+    background: #d1fadf;
+    color: var(--ok);
+}
+
+.result {
+    text-align: center;
+}
+
+.result .status {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-weight: 800;
+    margin: 12px 0 20px;
+}
+
+.status.success { background: #d1fadf; color: var(--ok); }
+.status.failed, .status.declined { background: #fee4e2; color: var(--danger); }
+.status.pending { background: #fef0c7; color: #93370d; }
+
+.summary {
+    display: grid;
+    gap: 10px;
+    text-align: right;
+    background: #fbf8f1;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.summary div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.footer {
+    padding: 18px 0 28px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+@media (max-width: 720px) {
+    .grid, .pay-types, .topbar .wrap {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
