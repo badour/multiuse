@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using SchoolPayment.Models;
+using SchoolPayment.Services;
 
 namespace SchoolPayment.Data
 {
@@ -130,6 +132,78 @@ WHERE p.OrderId = @OrderId";
                     return Map(reader);
                 }
             }
+        }
+
+        public IList<PaymentRecord> Search(DateTime? fromDate, DateTime? toDate, string pincode, string statusGroup, int? schoolId)
+        {
+            var rows = new List<PaymentRecord>();
+            const string sql = @"
+SELECT p.Id, p.OrderId, p.SchoolId, p.StudentId,
+       sc.Name, s.FullName, s.Pincode,
+       p.PaymentType, p.Amount, p.Currency, p.PayerName, p.PayerEmail, p.PayerPhone,
+       p.AlqasehPaymentId, p.PaymentToken, p.Status, p.GatewayStatus, p.ApprovalCode, p.Rrn, p.CreatedAt
+FROM dbo.Payments p
+INNER JOIN dbo.Schools sc ON sc.Id = p.SchoolId
+INNER JOIN dbo.Students s ON s.Id = p.StudentId
+WHERE (@FromDate IS NULL OR CAST(p.CreatedAt AS DATE) >= @FromDate)
+  AND (@ToDate IS NULL OR CAST(p.CreatedAt AS DATE) <= @ToDate)
+  AND (@Pincode IS NULL OR LTRIM(RTRIM(s.Pincode)) = @Pincode)
+  AND (@SchoolId IS NULL OR p.SchoolId = @SchoolId)
+  AND (
+        @StatusGroup IS NULL
+        OR (@StatusGroup = N'Success' AND p.Status IN (N'Success', N'Succeeded'))
+        OR (@StatusGroup = N'Failed' AND p.Status IN (N'Failed', N'Declined', N'Expired', N'Revoked', N'Duplicated'))
+      )
+ORDER BY p.CreatedAt DESC;";
+
+            using (var connection = SqlHelper.CreateConnection())
+            using (var command = new SqlCommand(sql, connection))
+            {
+                command.Parameters.Add(SqlHelper.Param("@FromDate", fromDate.HasValue ? (object)fromDate.Value.Date : null, SqlDbType.Date));
+                command.Parameters.Add(SqlHelper.Param("@ToDate", toDate.HasValue ? (object)toDate.Value.Date : null, SqlDbType.Date));
+                command.Parameters.Add(SqlHelper.Param("@Pincode", string.IsNullOrWhiteSpace(pincode) ? (object)null : pincode.Trim(), SqlDbType.NVarChar));
+                command.Parameters.Add(SqlHelper.Param("@SchoolId", schoolId.HasValue ? (object)schoolId.Value : null, SqlDbType.Int));
+                command.Parameters.Add(SqlHelper.Param("@StatusGroup", string.IsNullOrWhiteSpace(statusGroup) ? (object)null : statusGroup, SqlDbType.NVarChar, 20));
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        rows.Add(MapSearch(reader));
+                    }
+                }
+            }
+
+            return rows;
+        }
+
+        private static PaymentRecord MapSearch(SqlDataReader reader)
+        {
+            var record = new PaymentRecord
+            {
+                Id = reader.GetInt32(0),
+                OrderId = reader.GetString(1).Trim(),
+                SchoolId = reader.GetInt32(2),
+                StudentId = reader.GetInt32(3),
+                SchoolName = reader.GetString(4),
+                StudentName = reader.GetString(5),
+                Pincode = reader.IsDBNull(6) ? null : reader.GetString(6),
+                PaymentType = reader.GetString(7),
+                Amount = reader.GetDecimal(8),
+                Currency = reader.GetString(9).Trim(),
+                PayerName = reader.IsDBNull(10) ? null : reader.GetString(10),
+                PayerEmail = reader.IsDBNull(11) ? null : reader.GetString(11),
+                PayerPhone = reader.IsDBNull(12) ? null : reader.GetString(12),
+                AlqasehPaymentId = reader.IsDBNull(13) ? null : reader.GetString(13),
+                PaymentToken = reader.IsDBNull(14) ? null : reader.GetString(14),
+                Status = reader.GetString(15),
+                GatewayStatus = reader.IsDBNull(16) ? null : reader.GetString(16),
+                ApprovalCode = reader.IsDBNull(17) ? null : reader.GetString(17),
+                Rrn = reader.IsDBNull(18) ? null : reader.GetString(18),
+                CreatedAt = reader.GetDateTime(19)
+            };
+            record.StatusDisplay = PaymentStatusMapper.ToArabic(record.Status);
+            return record;
         }
 
         private static PaymentRecord Map(SqlDataReader reader)

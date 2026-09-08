@@ -36,5 +36,70 @@ namespace SchoolPayment.Services
                     return gatewayStatus;
             }
         }
+
+        public static bool IsFailed(string status)
+        {
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                return false;
+            }
+
+            switch (status.Trim().ToLowerInvariant())
+            {
+                case "failed":
+                case "declined":
+                case "expired":
+                case "revoked":
+                case "duplicated":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsSuccess(string status)
+        {
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                return false;
+            }
+
+            switch (status.Trim().ToLowerInvariant())
+            {
+                case "success":
+                case "succeeded":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static string ToArabic(string status)
+        {
+            if (IsSuccess(status))
+            {
+                return "نجاح";
+            }
+
+            if (IsFailed(status))
+            {
+                return "فشل";
+            }
+
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                return "—";
+            }
+
+            switch (status.Trim().ToLowerInvariant())
+            {
+                case "pending":
+                case "prepared":
+                case "retried":
+                    return "قيد المعالجة";
+                default:
+                    return status;
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ IF OBJECT_ID(N'dbo.Payments', N'U') IS NOT NULL DROP TABLE dbo.Payments;
 IF OBJECT_ID(N'dbo.PaymentFees', N'U') IS NOT NULL DROP TABLE dbo.PaymentFees;
 IF OBJECT_ID(N'dbo.Students', N'U') IS NOT NULL DROP TABLE dbo.Students;
 IF OBJECT_ID(N'dbo.Stages', N'U') IS NOT NULL DROP TABLE dbo.Stages;
+IF OBJECT_ID(N'dbo.PortalUsers', N'U') IS NOT NULL DROP TABLE dbo.PortalUsers;
 IF OBJECT_ID(N'dbo.Schools', N'U') IS NOT NULL DROP TABLE dbo.Schools;
 GO
 
@@ -72,9 +73,21 @@ CREATE TABLE dbo.Payments
     CONSTRAINT FK_Payments_Students FOREIGN KEY (StudentId) REFERENCES dbo.Students (Id)
 );
 
+CREATE TABLE dbo.PortalUsers
+(
+    Id INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+    Username NVARCHAR(80) NOT NULL,
+    PasswordHash NVARCHAR(500) NOT NULL,
+    DisplayName NVARCHAR(200) NULL,
+    IsActive BIT NOT NULL CONSTRAINT DF_PortalUsers_IsActive DEFAULT (1),
+    CreatedAt DATETIME2 NOT NULL CONSTRAINT DF_PortalUsers_CreatedAt DEFAULT (SYSUTCDATETIME()),
+    CONSTRAINT UQ_PortalUsers_Username UNIQUE (Username)
+);
+
 CREATE INDEX IX_Students_SchoolId ON dbo.Students (SchoolId);
 CREATE INDEX IX_Students_School_Number ON dbo.Students (SchoolId, StudentNumber);
 CREATE INDEX IX_Payments_StudentId ON dbo.Payments (StudentId);
+CREATE INDEX IX_Payments_CreatedAt ON dbo.Payments (CreatedAt);
 GO
 
 INSERT INTO dbo.Schools (Name) VALUES
@@ -102,4 +115,8 @@ INSERT INTO dbo.PaymentFees (SchoolId, PaymentType, Amount) VALUES
 (@Amal, N'اقساط عام حالي', 150000),
 (@Noor, N'اقساط عام حالي', 350000),
 (@Rafidain, N'اقساط عام حالي', 500000);
+
+-- Default portal login: admin / Admin@123  (change this password after first login)
+INSERT INTO dbo.PortalUsers (Username, PasswordHash, DisplayName) VALUES
+(N'admin', N'PBKDF2:100000:U2Nob29sUGF5U2FsdDE2Yg==:eNAzkiWf2Tfrapg5rZydZLlQKIZYAYnluiDPrx11d5M=', N'مدير النظام');
 GO

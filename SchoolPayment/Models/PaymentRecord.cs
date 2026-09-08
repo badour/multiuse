@@ -16,6 +16,7 @@ namespace SchoolPayment.Models
         public int StudentId { get; set; }
         public string SchoolName { get; set; }
         public string StudentName { get; set; }
+        public string Pincode { get; set; }
         public string PaymentType { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; }
@@ -29,5 +30,6 @@ namespace SchoolPayment.Models
         public string ApprovalCode { get; set; }
         public string Rrn { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string StatusDisplay { get; set; }
     }
 }

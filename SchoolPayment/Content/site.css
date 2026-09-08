@@ -117,7 +117,7 @@ label, .label {
     font-size: 14px;
 }
 
-select, input[type="text"], input[type="email"], input[type="tel"], .asp-input {
+select, input[type="text"], input[type="email"], input[type="tel"], input[type="password"], input[type="date"], input[type="file"], .asp-input {
     width: 100%;
     border: 1px solid #d7d0c3;
     border-radius: 12px;
@@ -235,6 +235,9 @@ select:focus, input:focus {
     font: inherit;
     font-weight: 800;
     cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
 }
 
 .btn-pay {
@@ -324,5 +327,91 @@ select:focus, input:focus {
     .actions {
         flex-direction: column;
         align-items: stretch;
+    }
+}
+
+.login-panel {
+    max-width: 460px;
+    margin: 0 auto;
+}
+
+.login-panel .field {
+    margin-bottom: 14px;
+}
+
+.remember {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.portal-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px 14px;
+}
+
+.portal-nav a,
+.nav-logout {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.12);
+    border: 0;
+    border-radius: 999px;
+    padding: 7px 12px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.portal-user {
+    opacity: 0.85;
+    font-size: 13px;
+}
+
+.portal-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.portal-card {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    background: #fffcf7;
+}
+
+.portal-card strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--navy);
+    font-size: 18px;
+}
+
+.portal-card span {
+    color: var(--muted);
+}
+
+.report-filters {
+    margin-bottom: 12px;
+}
+
+.report-filter-actions .btn {
+    width: 100%;
+}
+
+.upload-help {
+    margin-top: 18px;
+}
+
+@media (max-width: 720px) {
+    .portal-cards {
+        grid-template-columns: 1fr;
     }
 }

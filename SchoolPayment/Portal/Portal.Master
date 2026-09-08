@@ -1,0 +1,44 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Portal.Master.cs" Inherits="SchoolPayment.Portal.PortalMaster" %>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server">بوابة الإدارة</asp:ContentPlaceHolder></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link href="~/Content/site.css" rel="stylesheet" runat="server" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body>
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true" />
+        <header class="topbar">
+            <div class="wrap">
+                <div class="brand">
+                    <asp:Image ID="imgLogo" runat="server" ImageUrl="~/Content/logo.png" CssClass="brand-logo" AlternateText="شعار المدرسة" />
+                    <div>
+                        <strong>بوابة الإدارة المدرسية</strong>
+                        <small>رفع بيانات الطلاب وتقارير الدفع</small>
+                    </div>
+                </div>
+                <asp:Panel ID="pnlNav" runat="server" CssClass="portal-nav">
+                    <asp:HyperLink ID="lnkHome" runat="server" NavigateUrl="~/Portal/Default.aspx">الرئيسية</asp:HyperLink>
+                    <asp:HyperLink ID="lnkUpload" runat="server" NavigateUrl="~/Portal/Upload.aspx">رفع Excel</asp:HyperLink>
+                    <asp:HyperLink ID="lnkReport" runat="server" NavigateUrl="~/Portal/Report.aspx">تقرير الدفعات</asp:HyperLink>
+                    <asp:HyperLink ID="lnkPay" runat="server" NavigateUrl="~/Default.aspx">صفحة الدفع</asp:HyperLink>
+                    <span class="portal-user"><asp:Literal ID="litUser" runat="server" /></span>
+                    <asp:LinkButton ID="btnLogout" runat="server" CssClass="nav-logout" CausesValidation="false" OnClick="btnLogout_Click">تسجيل الخروج</asp:LinkButton>
+                </asp:Panel>
+            </div>
+        </header>
+        <main class="wrap page">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </main>
+        <footer class="footer">
+            <div class="wrap">بوابة داخلية لإدارة بيانات الطلاب ومتابعة عمليات الدفع.</div>
+        </footer>
+    </form>
+</body>
+</html>

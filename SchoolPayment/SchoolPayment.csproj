@@ -47,6 +47,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -58,6 +59,7 @@
     <Compile Include="Data\PaymentRepository.cs" />
     <Compile Include="Data\SchoolRepository.cs" />
     <Compile Include="Data\SqlHelper.cs" />
+    <Compile Include="Data\UserRepository.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -69,6 +71,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\PaymentRecord.cs" />
+    <Compile Include="Models\PortalUser.cs" />
     <Compile Include="Models\School.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="PaymentResult.aspx.cs">
@@ -78,10 +81,48 @@
     <Compile Include="PaymentResult.aspx.designer.cs">
       <DependentUpon>PaymentResult.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Portal\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\Portal.Master.cs">
+      <DependentUpon>Portal.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\Portal.Master.designer.cs">
+      <DependentUpon>Portal.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\Report.aspx.cs">
+      <DependentUpon>Report.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\Report.aspx.designer.cs">
+      <DependentUpon>Report.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\Upload.aspx.cs">
+      <DependentUpon>Upload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\Upload.aspx.designer.cs">
+      <DependentUpon>Upload.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AlqasehClient.cs" />
     <Compile Include="Services\AppUrls.cs" />
+    <Compile Include="Services\PasswordHasher.cs" />
     <Compile Include="Services\PaymentStatusMapper.cs" />
+    <Compile Include="Services\StudentExcelImporter.cs" />
+    <Compile Include="Services\XlsxReader.cs" />
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -96,13 +137,19 @@
   <ItemGroup>
     <Content Include="Content\logo.png" />
     <Content Include="Content\site.css" />
+    <Content Include="Content\StudentsUploadTemplate.xlsx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="PaymentResult.aspx" />
+    <Content Include="Portal\Default.aspx" />
+    <Content Include="Portal\Login.aspx" />
+    <Content Include="Portal\Report.aspx" />
+    <Content Include="Portal\Upload.aspx" />
     <Content Include="Webhook.ashx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Portal\Portal.Master" />
     <Content Include="Site.Master" />
   </ItemGroup>
   <ItemGroup>
