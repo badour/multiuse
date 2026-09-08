@@ -124,7 +124,6 @@ namespace SchoolPayment
             {
                 OrderId = orderId,
                 SchoolId = schoolId,
-                StageId = student.StageId,
                 StudentId = student.Id,
                 PaymentType = paymentType,
                 Amount = amount,
@@ -155,7 +154,6 @@ namespace SchoolPayment
                 new Dictionary<string, object>
                 {
                     { "schoolId", schoolId },
-                    { "stageId", student.StageId },
                     { "studentId", student.Id },
                     { "paymentType", paymentType }
                 });

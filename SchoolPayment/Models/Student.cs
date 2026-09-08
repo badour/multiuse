@@ -4,10 +4,9 @@ namespace SchoolPayment.Models
     {
         public int Id { get; set; }
         public int SchoolId { get; set; }
-        public int StageId { get; set; }
         public string FullName { get; set; }
         public string StudentNumber { get; set; }
-        public string StageName { get; set; }
+        public string Pincode { get; set; }
         public decimal TotalCost { get; set; }
         public decimal PaidCost { get; set; }
         public decimal RemainCost { get; set; }

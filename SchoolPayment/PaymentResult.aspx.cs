@@ -71,7 +71,6 @@ namespace SchoolPayment
             pnlSummary.Visible = true;
             litOrderId.Text = Server.HtmlEncode(payment.OrderId);
             litSchool.Text = Server.HtmlEncode(payment.SchoolName);
-            litStage.Text = Server.HtmlEncode(payment.StageName);
             litStudent.Text = Server.HtmlEncode(payment.StudentName);
             litPaymentType.Text = Server.HtmlEncode(payment.PaymentType);
             litAmount.Text = string.Format(new CultureInfo("ar-IQ"), "{0:N0} {1}", payment.Amount, payment.Currency);

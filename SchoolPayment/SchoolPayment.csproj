@@ -70,7 +70,6 @@
     </Compile>
     <Compile Include="Models\PaymentRecord.cs" />
     <Compile Include="Models\School.cs" />
-    <Compile Include="Models\Stage.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="PaymentResult.aspx.cs">
       <DependentUpon>PaymentResult.aspx</DependentUpon>

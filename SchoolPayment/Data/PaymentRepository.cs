@@ -12,12 +12,12 @@ namespace SchoolPayment.Data
             const string sql = @"
 INSERT INTO dbo.Payments
 (
-    OrderId, SchoolId, StageId, StudentId, PaymentType, Amount, Currency,
+    OrderId, SchoolId, StudentId, PaymentType, Amount, Currency,
     PayerName, PayerEmail, PayerPhone, AlqasehPaymentId, PaymentToken, Status, GatewayStatus
 )
 VALUES
 (
-    @OrderId, @SchoolId, @StageId, @StudentId, @PaymentType, @Amount, @Currency,
+    @OrderId, @SchoolId, @StudentId, @PaymentType, @Amount, @Currency,
     @PayerName, @PayerEmail, @PayerPhone, @AlqasehPaymentId, @PaymentToken, @Status, @GatewayStatus
 )";
 
@@ -106,13 +106,12 @@ WHERE (@OrderId IS NOT NULL AND OrderId = @OrderId)
         public PaymentRecord GetByOrderId(string orderId)
         {
             const string sql = @"
-SELECT p.Id, p.OrderId, p.SchoolId, p.StageId, p.StudentId,
-       sc.Name, st.Name, s.FullName,
+SELECT p.Id, p.OrderId, p.SchoolId, p.StudentId,
+       sc.Name, s.FullName,
        p.PaymentType, p.Amount, p.Currency, p.PayerName, p.PayerEmail, p.PayerPhone,
        p.AlqasehPaymentId, p.PaymentToken, p.Status, p.GatewayStatus, p.ApprovalCode, p.Rrn, p.CreatedAt
 FROM dbo.Payments p
 INNER JOIN dbo.Schools sc ON sc.Id = p.SchoolId
-INNER JOIN dbo.Stages st ON st.Id = p.StageId
 INNER JOIN dbo.Students s ON s.Id = p.StudentId
 WHERE p.OrderId = @OrderId";
 
@@ -140,32 +139,29 @@ WHERE p.OrderId = @OrderId";
                 Id = reader.GetInt32(0),
                 OrderId = reader.GetString(1).Trim(),
                 SchoolId = reader.GetInt32(2),
-                StageId = reader.GetInt32(3),
-                StudentId = reader.GetInt32(4),
-                SchoolName = reader.GetString(5),
-                StageName = reader.GetString(6),
-                StudentName = reader.GetString(7),
-                PaymentType = reader.GetString(8),
-                Amount = reader.GetDecimal(9),
-                Currency = reader.GetString(10).Trim(),
-                PayerName = reader.IsDBNull(11) ? null : reader.GetString(11),
-                PayerEmail = reader.IsDBNull(12) ? null : reader.GetString(12),
-                PayerPhone = reader.IsDBNull(13) ? null : reader.GetString(13),
-                AlqasehPaymentId = reader.IsDBNull(14) ? null : reader.GetString(14),
-                PaymentToken = reader.IsDBNull(15) ? null : reader.GetString(15),
-                Status = reader.GetString(16),
-                GatewayStatus = reader.IsDBNull(17) ? null : reader.GetString(17),
-                ApprovalCode = reader.IsDBNull(18) ? null : reader.GetString(18),
-                Rrn = reader.IsDBNull(19) ? null : reader.GetString(19),
-                CreatedAt = reader.GetDateTime(20)
+                StudentId = reader.GetInt32(3),
+                SchoolName = reader.GetString(4),
+                StudentName = reader.GetString(5),
+                PaymentType = reader.GetString(6),
+                Amount = reader.GetDecimal(7),
+                Currency = reader.GetString(8).Trim(),
+                PayerName = reader.IsDBNull(9) ? null : reader.GetString(9),
+                PayerEmail = reader.IsDBNull(10) ? null : reader.GetString(10),
+                PayerPhone = reader.IsDBNull(11) ? null : reader.GetString(11),
+                AlqasehPaymentId = reader.IsDBNull(12) ? null : reader.GetString(12),
+                PaymentToken = reader.IsDBNull(13) ? null : reader.GetString(13),
+                Status = reader.GetString(14),
+                GatewayStatus = reader.IsDBNull(15) ? null : reader.GetString(15),
+                ApprovalCode = reader.IsDBNull(16) ? null : reader.GetString(16),
+                Rrn = reader.IsDBNull(17) ? null : reader.GetString(17),
+                CreatedAt = reader.GetDateTime(18)
             };
         }
 
         private static void AddCommonParameters(SqlCommand command, PaymentRecord payment)
         {
-                command.Parameters.Add(SqlHelper.Param("@OrderId", payment.OrderId, SqlDbType.Char, 32));
+            command.Parameters.Add(SqlHelper.Param("@OrderId", payment.OrderId, SqlDbType.Char, 32));
             command.Parameters.Add(SqlHelper.Param("@SchoolId", payment.SchoolId, SqlDbType.Int));
-            command.Parameters.Add(SqlHelper.Param("@StageId", payment.StageId, SqlDbType.Int));
             command.Parameters.Add(SqlHelper.Param("@StudentId", payment.StudentId, SqlDbType.Int));
             command.Parameters.Add(SqlHelper.Param("@PaymentType", payment.PaymentType, SqlDbType.NVarChar));
             command.Parameters.Add(new SqlParameter("@Amount", SqlDbType.Decimal)

@@ -8,7 +8,7 @@ The school form does **not** collect card numbers. The parent chooses a school, 
 
 1. **School name** — from SQL `Schools`
 2. **Student ID** — typed by the parent, then **بحث**
-3. If the student is found, a **GridView** shows: id, name, stage, total cost, paid cost, remain cost, debt cost, discount cost
+3. If the student is found, a **GridView** shows: id, name, pincode, total cost, paid cost, remain cost, debt cost, discount cost
 4. **Payment type** — `اقساط عام حالي` or `ديون`
 5. **Payment amount** — typed by the parent in IQD
 
@@ -50,10 +50,10 @@ Production:
 
 ## SQL objects
 
-- `Schools`, `Stages`, `Students` (`TotalCost`, `PaidCost`, `RemainCost`, `DebtCost`, `DiscountCost`)
-- `PaymentFees` — installment amount per school / stage / payment type
+- `Schools`, `Students` (`Pincode`, `TotalCost`, `PaidCost`, `RemainCost`, `DebtCost`, `DiscountCost`)
+- `PaymentFees` — installment amount per school / payment type
 - `Payments` — local order log (`OrderId` is a 32-character GUID, as required by Alqaseh `order_id`)
 
 Replace the sample Arabic school/student rows in `Database/SchoolPayment.sql` with your data.
 
-If the database already exists from an earlier version, run `Database/UpgradeStudentsCosts.sql` instead of recreating it.
+If the database already exists from an earlier version, run `Database/UpgradeStudentsCosts.sql` then `Database/UpgradeRemoveStageAddPincode.sql` instead of recreating it.

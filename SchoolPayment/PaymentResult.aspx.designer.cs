@@ -6,7 +6,6 @@ namespace SchoolPayment
         protected global::System.Web.UI.WebControls.Panel pnlSummary;
         protected global::System.Web.UI.WebControls.Literal litOrderId;
         protected global::System.Web.UI.WebControls.Literal litSchool;
-        protected global::System.Web.UI.WebControls.Literal litStage;
         protected global::System.Web.UI.WebControls.Literal litStudent;
         protected global::System.Web.UI.WebControls.Literal litPaymentType;
         protected global::System.Web.UI.WebControls.Literal litAmount;

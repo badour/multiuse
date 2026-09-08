@@ -13,10 +13,8 @@ namespace SchoolPayment.Models
         public int Id { get; set; }
         public string OrderId { get; set; }
         public int SchoolId { get; set; }
-        public int StageId { get; set; }
         public int StudentId { get; set; }
         public string SchoolName { get; set; }
-        public string StageName { get; set; }
         public string StudentName { get; set; }
         public string PaymentType { get; set; }
         public decimal Amount { get; set; }

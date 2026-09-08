@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -49,11 +48,9 @@ ORDER BY Name";
             var hasNumericId = int.TryParse(studentLookup.Trim(), out parsedId);
 
             const string sql = @"
-SELECT s.Id, s.SchoolId, s.StageId, s.FullName, s.StudentNumber,
-       s.TotalCost, s.PaidCost, s.RemainCost, s.DebtCost, s.DiscountCost,
-       st.Name
+SELECT s.Id, s.SchoolId, s.FullName, s.StudentNumber, s.Pincode,
+       s.TotalCost, s.PaidCost, s.RemainCost, s.DebtCost, s.DiscountCost
 FROM dbo.Students s
-INNER JOIN dbo.Stages st ON st.Id = s.StageId
 WHERE s.SchoolId = @SchoolId
   AND (
         s.StudentNumber = @Lookup
@@ -73,7 +70,7 @@ ORDER BY s.FullName";
                 {
                     while (reader.Read())
                     {
-                        students.Add(MapStudent(reader, true));
+                        students.Add(MapStudent(reader));
                     }
                 }
             }
@@ -84,11 +81,9 @@ ORDER BY s.FullName";
         public Student GetStudent(int studentId)
         {
             const string sql = @"
-SELECT s.Id, s.SchoolId, s.StageId, s.FullName, s.StudentNumber,
-       s.TotalCost, s.PaidCost, s.RemainCost, s.DebtCost, s.DiscountCost,
-       st.Name
+SELECT s.Id, s.SchoolId, s.FullName, s.StudentNumber, s.Pincode,
+       s.TotalCost, s.PaidCost, s.RemainCost, s.DebtCost, s.DiscountCost
 FROM dbo.Students s
-INNER JOIN dbo.Stages st ON st.Id = s.StageId
 WHERE s.Id = @Id";
 
             using (var connection = SqlHelper.CreateConnection())
@@ -103,26 +98,25 @@ WHERE s.Id = @Id";
                         return null;
                     }
 
-                    return MapStudent(reader, true);
+                    return MapStudent(reader);
                 }
             }
         }
 
-        private static Student MapStudent(SqlDataReader reader, bool includeStageName)
+        private static Student MapStudent(SqlDataReader reader)
         {
             return new Student
             {
                 Id = reader.GetInt32(0),
                 SchoolId = reader.GetInt32(1),
-                StageId = reader.GetInt32(2),
-                FullName = reader.GetString(3),
-                StudentNumber = reader.IsDBNull(4) ? null : reader.GetString(4),
+                FullName = reader.GetString(2),
+                StudentNumber = reader.IsDBNull(3) ? null : reader.GetString(3),
+                Pincode = reader.IsDBNull(4) ? null : reader.GetString(4),
                 TotalCost = reader.GetDecimal(5),
                 PaidCost = reader.GetDecimal(6),
                 RemainCost = reader.GetDecimal(7),
                 DebtCost = reader.GetDecimal(8),
-                DiscountCost = reader.GetDecimal(9),
-                StageName = includeStageName && !reader.IsDBNull(10) ? reader.GetString(10) : null
+                DiscountCost = reader.GetDecimal(9)
             };
         }
     }

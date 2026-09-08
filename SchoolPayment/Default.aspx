@@ -37,7 +37,7 @@
                         <Columns>
                             <asp:BoundField DataField="Id" HeaderText="الرقم" />
                             <asp:BoundField DataField="FullName" HeaderText="الاسم" />
-                            <asp:BoundField DataField="StageName" HeaderText="المرحلة" />
+                            <asp:BoundField DataField="Pincode" HeaderText="الرمز" />
                             <asp:BoundField DataField="TotalCost" HeaderText="الكلفة الكلية" DataFormatString="{0:N0}" HtmlEncode="false" />
                             <asp:BoundField DataField="PaidCost" HeaderText="المدفوع" DataFormatString="{0:N0}" HtmlEncode="false" />
                             <asp:BoundField DataField="RemainCost" HeaderText="المتبقي" DataFormatString="{0:N0}" HtmlEncode="false" />
