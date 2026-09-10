@@ -6,7 +6,7 @@ namespace SchoolPayment
         protected global::System.Web.UI.UpdatePanel upPayment;
         protected global::System.Web.UI.WebControls.HiddenField hfStudentId;
         protected global::System.Web.UI.WebControls.DropDownList ddlSchool;
-        protected global::System.Web.UI.WebControls.TextBox txtStudentId;
+        protected global::System.Web.UI.WebControls.TextBox txtPincode;
         protected global::System.Web.UI.WebControls.Button btnSearch;
         protected global::System.Web.UI.WebControls.GridView gvStudent;
         protected global::System.Web.UI.WebControls.Panel pnlPayment;

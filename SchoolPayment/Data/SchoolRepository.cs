@@ -156,35 +156,27 @@ VALUES
             };
         }
 
-        public IList<Student> SearchStudents(int schoolId, string studentLookup)
+        public IList<Student> SearchStudents(int schoolId, string pincode)
         {
             var students = new List<Student>();
-            if (schoolId <= 0 || string.IsNullOrWhiteSpace(studentLookup))
+            if (schoolId <= 0 || string.IsNullOrWhiteSpace(pincode))
             {
                 return students;
             }
-
-            int parsedId;
-            var hasNumericId = int.TryParse(studentLookup.Trim(), out parsedId);
 
             const string sql = @"
 SELECT s.Id, s.SchoolId, s.FullName, s.StudentNumber, s.Pincode,
        s.TotalCost, s.PaidCost, s.RemainCost, s.DebtCost, s.DiscountCost
 FROM dbo.Students s
 WHERE s.SchoolId = @SchoolId
-  AND (
-        s.StudentNumber = @Lookup
-        OR (@HasNumericId = 1 AND s.Id = @StudentId)
-      )
+  AND LTRIM(RTRIM(s.Pincode)) = @Pincode
 ORDER BY s.FullName";
 
             using (var connection = SqlHelper.CreateConnection())
             using (var command = new SqlCommand(sql, connection))
             {
                 command.Parameters.Add(SqlHelper.Param("@SchoolId", schoolId, SqlDbType.Int));
-                command.Parameters.Add(SqlHelper.Param("@Lookup", studentLookup.Trim(), SqlDbType.NVarChar, 50));
-                command.Parameters.Add(SqlHelper.Param("@HasNumericId", hasNumericId, SqlDbType.Bit));
-                command.Parameters.Add(SqlHelper.Param("@StudentId", hasNumericId ? (object)parsedId : 0, SqlDbType.Int));
+                command.Parameters.Add(SqlHelper.Param("@Pincode", pincode.Trim(), SqlDbType.NVarChar));
                 connection.Open();
                 using (var reader = command.ExecuteReader())
                 {

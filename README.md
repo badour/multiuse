@@ -2,12 +2,12 @@
 
 ASP.NET Web Forms page for school fee payment with **Visa** and **Mastercard** through the [Alqaseh Payment API](https://docs.alqaseh.com/payment-api).
 
-The school form does **not** collect card numbers. The parent chooses a school, enters a student ID, searches, then pays. The app creates an Alqaseh payment context and redirects to Alqaseh’s hosted payment page (`https://pay-test.alqaseh.com/pay/{token}`). That is the supported flow for merchants that are not PCI-DSS certified.
+The school form does **not** collect card numbers. The parent chooses a school, enters the student **pincode** (same value as `Students.Pincode`), searches, then pays. The app creates an Alqaseh payment context and redirects to Alqaseh’s hosted payment page (`https://pay-test.alqaseh.com/pay/{token}`). That is the supported flow for merchants that are not PCI-DSS certified.
 
 ## What the form does
 
 1. **School name** — from SQL `Schools`
-2. **Student ID** — typed by the parent, then **بحث**
+2. **Pincode** — typed by the parent, then **بحث** (match is school + exact pincode)
 3. If the student is found, a **GridView** shows: id, name, pincode, total cost, paid cost, remain cost, debt cost, discount cost
 4. **Payment type** — `اقساط عام حالي` or `ديون`
 5. **Payment amount** — typed by the parent in IQD

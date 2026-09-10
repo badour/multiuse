@@ -52,21 +52,21 @@ namespace SchoolPayment
                 return;
             }
 
-            var lookup = (txtStudentId.Text ?? string.Empty).Trim();
-            if (string.IsNullOrWhiteSpace(lookup))
+            var pincode = (txtPincode.Text ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(pincode))
             {
-                ShowError("يرجى إدخال رقم الطالب ثم الضغط على بحث.");
+                ShowError("يرجى إدخال رمز الطالب ثم الضغط على بحث.");
                 return;
             }
 
             try
             {
-                var students = _schools.SearchStudents(schoolId, lookup);
+                var students = _schools.SearchStudents(schoolId, pincode);
                 BindStudentGrid(students);
 
                 if (students.Count == 0)
                 {
-                    ShowError("لم يتم العثور على طالب بهذا الرقم في المدرسة المحددة.");
+                    ShowError("لم يتم العثور على طالب بهذا الرمز في المدرسة المحددة.");
                     return;
                 }
 

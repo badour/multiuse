@@ -5,7 +5,7 @@
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
     <section class="panel">
         <h1>دفع الرسوم عبر فيزا أو ماستركارد</h1>
-        <p class="lead">اختر المدرسة، أدخل رقم الطالب ثم اضغط بحث. إذا ظهر اسم الطالب يمكنك إكمال الدفع.</p>
+        <p class="lead">اختر المدرسة، أدخل رمز الطالب ثم اضغط بحث. إذا ظهر اسم الطالب يمكنك إكمال الدفع.</p>
 
         <asp:Literal ID="litMessage" runat="server" />
 
@@ -22,9 +22,9 @@
                         <asp:DropDownList ID="ddlSchool" runat="server" AutoPostBack="true" CausesValidation="false" OnSelectedIndexChanged="ddlSchool_SelectedIndexChanged" />
                     </div>
                     <div class="field">
-                        <asp:Label runat="server" AssociatedControlID="txtStudentId" Text="رقم الطالب" />
+                        <asp:Label runat="server" AssociatedControlID="txtPincode" Text="الرمز" />
                         <div class="search-input">
-                            <asp:TextBox ID="txtStudentId" runat="server" MaxLength="50" />
+                            <asp:TextBox ID="txtPincode" runat="server" MaxLength="200" />
                             <asp:Button ID="btnSearch" runat="server" CssClass="btn btn-search" Text="بحث" CausesValidation="false" OnClick="btnSearch_Click" />
                         </div>
                     </div>
@@ -32,7 +32,7 @@
 
                 <div class="grid-wrap">
                     <asp:GridView ID="gvStudent" runat="server" CssClass="student-grid" AutoGenerateColumns="false"
-                        EmptyDataText="لا توجد بيانات طالب. اختر المدرسة وأدخل رقم الطالب ثم اضغط بحث."
+                        EmptyDataText="لا توجد بيانات طالب. اختر المدرسة وأدخل الرمز ثم اضغط بحث."
                         ShowHeaderWhenEmpty="true" DataKeyNames="Id" GridLines="None">
                         <Columns>
                             <asp:BoundField DataField="Id" HeaderText="الرقم" />
