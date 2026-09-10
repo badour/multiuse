@@ -399,15 +399,21 @@ select:focus, input:focus {
 }
 
 .report-filters {
-    display: grid;
-    grid-template-columns: 150px 150px minmax(160px, 1fr) 150px minmax(220px, 1.4fr);
-    gap: 12px 14px;
-    align-items: end;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
     margin-bottom: 16px;
     padding: 16px 18px;
     background: #fbf8f1;
     border: 1px solid var(--line);
     border-radius: 16px;
+}
+
+.report-filter-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    align-items: end;
 }
 
 .report-filters .field {
@@ -420,31 +426,18 @@ select:focus, input:focus {
     border-radius: 10px;
 }
 
-.report-actions {
-    grid-column: 1 / -1;
+.report-action-buttons {
     display: flex;
-    flex-wrap: wrap;
     gap: 10px;
-    align-items: center;
 }
 
-.report-actions .btn {
-    min-width: 150px;
+.report-action-buttons .btn {
+    flex: 1;
+    min-width: 0;
 }
 
 .upload-help {
     margin-top: 18px;
-}
-
-@media (max-width: 980px) {
-    .report-filters {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .field-school,
-    .field-pincode {
-        grid-column: 1 / -1;
-    }
 }
 
 @media (max-width: 720px) {
@@ -452,16 +445,15 @@ select:focus, input:focus {
         grid-template-columns: 1fr;
     }
 
-    .report-filters {
+    .report-filter-row {
         grid-template-columns: 1fr;
     }
 
-    .field-school,
-    .field-pincode {
-        grid-column: auto;
+    .report-action-buttons {
+        flex-direction: column;
     }
 
-    .report-actions .btn {
+    .report-action-buttons .btn {
         width: 100%;
     }
 }

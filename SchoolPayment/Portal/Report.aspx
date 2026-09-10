@@ -9,33 +9,40 @@
         <asp:Literal ID="litMessage" runat="server" />
 
         <div class="report-filters">
-            <div class="field field-from">
-                <asp:Label runat="server" AssociatedControlID="txtFrom" Text="من تاريخ" />
-                <asp:TextBox ID="txtFrom" runat="server" TextMode="Date" CssClass="filter-date" />
+            <div class="report-filter-row">
+                <div class="field field-from">
+                    <asp:Label runat="server" AssociatedControlID="txtFrom" Text="من تاريخ" />
+                    <asp:TextBox ID="txtFrom" runat="server" TextMode="Date" CssClass="filter-date" />
+                </div>
+                <div class="field field-to">
+                    <asp:Label runat="server" AssociatedControlID="txtTo" Text="إلى تاريخ" />
+                    <asp:TextBox ID="txtTo" runat="server" TextMode="Date" CssClass="filter-date" />
+                </div>
+                <div class="field field-pincode">
+                    <asp:Label runat="server" AssociatedControlID="txtPincode" Text="رمز الطالب" />
+                    <asp:TextBox ID="txtPincode" runat="server" MaxLength="200" CssClass="filter-pincode" />
+                </div>
             </div>
-            <div class="field field-to">
-                <asp:Label runat="server" AssociatedControlID="txtTo" Text="إلى تاريخ" />
-                <asp:TextBox ID="txtTo" runat="server" TextMode="Date" CssClass="filter-date" />
-            </div>
-            <div class="field field-pincode">
-                <asp:Label runat="server" AssociatedControlID="txtPincode" Text="رمز الطالب" />
-                <asp:TextBox ID="txtPincode" runat="server" MaxLength="200" CssClass="filter-pincode" />
-            </div>
-            <div class="field field-status">
-                <asp:Label runat="server" AssociatedControlID="ddlStatus" Text="حالة العملية" />
-                <asp:DropDownList ID="ddlStatus" runat="server" CssClass="filter-status">
-                    <asp:ListItem Text="الكل" Value="" />
-                    <asp:ListItem Text="نجاح" Value="Success" />
-                    <asp:ListItem Text="فشل" Value="Failed" />
-                </asp:DropDownList>
-            </div>
-            <div class="field field-school">
-                <asp:Label runat="server" AssociatedControlID="ddlSchool" Text="اسم المدرسة" />
-                <asp:DropDownList ID="ddlSchool" runat="server" CssClass="filter-school" />
-            </div>
-            <div class="report-actions">
-                <asp:Button ID="btnFilter" runat="server" CssClass="btn btn-search" Text="عرض التقرير" OnClick="btnFilter_Click" />
-                <asp:Button ID="btnExport" runat="server" CssClass="btn btn-pay" Text="تنزيل Excel" OnClick="btnExport_Click" />
+            <div class="report-filter-row">
+                <div class="field field-status">
+                    <asp:Label runat="server" AssociatedControlID="ddlStatus" Text="حالة العملية" />
+                    <asp:DropDownList ID="ddlStatus" runat="server" CssClass="filter-status">
+                        <asp:ListItem Text="الكل" Value="" />
+                        <asp:ListItem Text="نجاح" Value="Success" />
+                        <asp:ListItem Text="فشل" Value="Failed" />
+                    </asp:DropDownList>
+                </div>
+                <div class="field field-school">
+                    <asp:Label runat="server" AssociatedControlID="ddlSchool" Text="اسم المدرسة" />
+                    <asp:DropDownList ID="ddlSchool" runat="server" CssClass="filter-school" />
+                </div>
+                <div class="field report-actions">
+                    <span class="label">&nbsp;</span>
+                    <div class="report-action-buttons">
+                        <asp:Button ID="btnFilter" runat="server" CssClass="btn btn-search" Text="عرض التقرير" OnClick="btnFilter_Click" />
+                        <asp:Button ID="btnExport" runat="server" CssClass="btn btn-pay" Text="تنزيل Excel" OnClick="btnExport_Click" />
+                    </div>
+                </div>
             </div>
         </div>
 
