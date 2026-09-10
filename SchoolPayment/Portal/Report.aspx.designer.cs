@@ -9,6 +9,7 @@ namespace SchoolPayment.Portal
         protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
         protected global::System.Web.UI.WebControls.DropDownList ddlSchool;
         protected global::System.Web.UI.WebControls.Button btnFilter;
+        protected global::System.Web.UI.WebControls.Button btnExport;
         protected global::System.Web.UI.WebControls.Literal litCount;
         protected global::System.Web.UI.WebControls.GridView gvPayments;
     }

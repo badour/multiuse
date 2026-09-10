@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SchoolPayment.Data;
+using SchoolPayment.Models;
+using SchoolPayment.Services;
 
 namespace SchoolPayment.Portal
 {
@@ -29,6 +32,59 @@ namespace SchoolPayment.Portal
             BindGrid();
         }
 
+        protected void btnExport_Click(object sender, EventArgs e)
+        {
+            IList<PaymentRecord> rows;
+            if (!TryLoadFilteredPayments(out rows))
+            {
+                return;
+            }
+
+            if (rows.Count == 0)
+            {
+                ShowError("لا توجد عمليات مطابقة للتصفية لتنزيلها.");
+                return;
+            }
+
+            var headers = new[]
+            {
+                "التاريخ", "المدرسة", "الطالب", "الرمز", "نوع الدفع",
+                "المبلغ", "العملة", "الحالة", "ولي الأمر", "الهاتف", "رقم الطلب"
+            };
+            var data = new List<IList<string>>(rows.Count);
+            foreach (var row in rows)
+            {
+                data.Add(new[]
+                {
+                    row.CreatedAt.ToString("yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture),
+                    row.SchoolName ?? string.Empty,
+                    row.StudentName ?? string.Empty,
+                    row.Pincode ?? string.Empty,
+                    row.PaymentType ?? string.Empty,
+                    row.Amount.ToString("0.##", CultureInfo.InvariantCulture),
+                    row.Currency ?? string.Empty,
+                    row.StatusDisplay ?? row.Status ?? string.Empty,
+                    row.PayerName ?? string.Empty,
+                    row.PayerPhone ?? string.Empty,
+                    row.OrderId ?? string.Empty
+                });
+            }
+
+            var bytes = XlsxWriter.Write("الدفعات", headers, data);
+            var fileName = "Payments_" + DateTime.Now.ToString("yyyyMMdd_HHmm", CultureInfo.InvariantCulture) + ".xlsx";
+
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.AddHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.SuppressContent = true;
+            Context.ApplicationInstance.CompleteRequest();
+        }
+
         protected void gvPayments_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvPayments.PageIndex = e.NewPageIndex;
@@ -47,6 +103,20 @@ namespace SchoolPayment.Portal
 
         private void BindGrid()
         {
+            IList<PaymentRecord> rows;
+            if (!TryLoadFilteredPayments(out rows))
+            {
+                return;
+            }
+
+            gvPayments.DataSource = rows;
+            gvPayments.DataBind();
+            litCount.Text = "عدد العمليات: " + rows.Count.ToString(CultureInfo.InvariantCulture);
+        }
+
+        private bool TryLoadFilteredPayments(out IList<PaymentRecord> rows)
+        {
+            rows = new List<PaymentRecord>();
             litMessage.Text = string.Empty;
 
             DateTime fromDate;
@@ -56,19 +126,19 @@ namespace SchoolPayment.Portal
             if (!string.IsNullOrWhiteSpace(txtFrom.Text) && !hasFrom)
             {
                 ShowError("تاريخ البداية غير صحيح.");
-                return;
+                return false;
             }
 
             if (!string.IsNullOrWhiteSpace(txtTo.Text) && !hasTo)
             {
                 ShowError("تاريخ النهاية غير صحيح.");
-                return;
+                return false;
             }
 
             if (hasFrom && hasTo && fromDate > toDate)
             {
                 ShowError("تاريخ البداية يجب أن يكون قبل تاريخ النهاية أو يساويه.");
-                return;
+                return false;
             }
 
             int schoolId;
@@ -80,19 +150,18 @@ namespace SchoolPayment.Portal
 
             try
             {
-                var rows = _payments.Search(
+                rows = _payments.Search(
                     hasFrom ? (DateTime?)fromDate : null,
                     hasTo ? (DateTime?)toDate : null,
                     txtPincode.Text,
                     ddlStatus.SelectedValue,
                     schoolFilter);
-                gvPayments.DataSource = rows;
-                gvPayments.DataBind();
-                litCount.Text = "عدد العمليات: " + rows.Count.ToString(CultureInfo.InvariantCulture);
+                return true;
             }
             catch (SqlException)
             {
                 ShowError("تعذر قراءة التقرير من قاعدة البيانات.");
+                return false;
             }
         }
 

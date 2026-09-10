@@ -123,6 +123,7 @@
     <Compile Include="Services\PaymentStatusMapper.cs" />
     <Compile Include="Services\StudentExcelImporter.cs" />
     <Compile Include="Services\XlsxReader.cs" />
+    <Compile Include="Services\XlsxWriter.cs" />
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

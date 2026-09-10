@@ -22,7 +22,7 @@ Staff URL: `/Portal/Login.aspx` (for example `http://localhost:50500/Portal/Logi
 
 1. **Login** — users are stored in `PortalUsers` in the payment database. Default account after running the SQL scripts: `admin` / `Admin@123` (change this password after first use).
 2. **Upload** — import students from an `.xlsx` file into `Students`. Matching is by school + pincode, then school + student number. Download the column template from the upload page.
-3. **Report** — list payment transactions (success and failed). Filter by from/to date, student pincode, status, and school name.
+3. **Report** — list payment transactions (success and failed). Filter by from/to date, student pincode, status, and school name, then download the filtered rows as Excel.
 
 The public payment page stays anonymous. Portal pages require a logged-in user.
 
